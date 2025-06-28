@@ -1,0 +1,11 @@
+
+Existing Screens:
+CPU utilization: 100%
+Cores used: 1
+Cores available: 0
+------------------------------------------------
+Running Processes: 
+
+Finished Processes: 
+------------------------------------------------
+
