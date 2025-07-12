@@ -74,13 +74,16 @@ void ConsoleManager::getInput(const std::string& command)
             config_file >> temp >> min_ins;  
             config_file >> temp >> max_ins;  
             config_file >> temp >> delays_per_exec;  
+            config_file >> temp >> max_overall_mem;
+            config_file >> temp >> mem_per_frame;
+            config_file >> temp >> mem_per_proc;
 
             config_file.close();
 
             cpu_clock = new Clock();
             cpu_clock->startCpuClock();
 
-            process_manager = new ProcessManager(min_ins, max_ins, num_cpu, scheduler, delays_per_exec, quantum_cycles, cpu_clock);
+            process_manager = new ProcessManager(min_ins, max_ins, num_cpu, scheduler, delays_per_exec, quantum_cycles, cpu_clock, max_overall_mem, mem_per_frame, mem_per_proc);
             GLOBAL_PM = process_manager;
 
             initialized = true;

@@ -24,6 +24,9 @@ private:
     bool initialized = false;
     bool scheduler_running = false;
     Clock* cpu_clock;
+    size_t mem_per_proc;
+    size_t max_overall_mem;
+    size_t mem_per_frame;
 
     struct Screen
     {

@@ -3,6 +3,7 @@
 
 #include "Clock.hpp"
 #include "Globals.hpp"
+#include "FlatMemoryAllocator.hpp"
 
 #include <queue>
 #include <thread>
@@ -20,7 +21,7 @@ class Process;
 class Scheduler
 {
 public:
-    Scheduler(std::string scheduler_algo, int delays_per_exec, int n_cpu, int quantum_cycle, Clock* cpu_clock);
+    Scheduler(std::string scheduler_algo, int delays_per_exec, int n_cpu, int quantum_cycle, Clock* cpu_clock, IMemoryAllocator* memory_allocator);
     void addProcess(std::shared_ptr<Process> process);
     void setAlgorithm(const std::string& algorithm);
     void setNumCPUs(int num);
@@ -35,6 +36,8 @@ private:
     void run(int core_id);
     void scheduleFCFS(int core_id);
     void scheduleRR(int core_id);
+    void startMemoryLog();
+    void logMemoryState(int cycle);
 
     bool memory_log_ = false;
     bool is_running;
@@ -53,6 +56,8 @@ private:
     std::mutex log_mutex_;
     std::condition_variable start_condition_;
     Clock* cpu_clock;
+    IMemoryAllocator* memory_allocator_;
+    std::thread memory_logging_thread_;
 };
 
 #endif
