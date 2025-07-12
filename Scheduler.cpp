@@ -1,4 +1,4 @@
-﻿#include "Scheduler.hpp"
+#include "Scheduler.hpp"
 #include "Process.hpp"
 #include "CoreStateManager.hpp"
 #include "Clock.hpp"
@@ -112,8 +112,8 @@ void Scheduler::stop()
 {
     is_running = false;
 
-    cpu_clock->getCondition().notify_all(); 
-    queue_condition_.notify_all();         
+    cpu_clock->getCondition().notify_all();
+    queue_condition_.notify_all();
 
     for (auto& thread : worker_threads_)
     {
@@ -177,7 +177,7 @@ void Scheduler::scheduleFCFS(int core_id)
             process_queue_.pop();
         }
 
-        
+
 
         if (process)
         {
@@ -323,6 +323,12 @@ void Scheduler::scheduleRR(int core_id)
             {
                 memory = memory_allocator_->allocate(process);
 
+                if (memory)
+                {
+                    process->setAllocTime();
+                    process->setMemory(memory);
+                }
+
                 if (!memory) {
                     process->setState(Process::READY);
                     {
@@ -378,7 +384,7 @@ void Scheduler::scheduleRR(int core_id)
                     first_command_executed = false;
                     cycle_counter = 0;
                     quantum++;
-                    
+
                     if (quantum >= quantum_cycle)
                     {
                         logMemoryState(snapshot_ctr.fetch_add(1));  // memory_stamp_<qq>.txt
@@ -418,7 +424,16 @@ void Scheduler::scheduleRR(int core_id)
 void Scheduler::logMemoryState(int cycle)
 {
     std::string filename = "memory_stamp_" + std::to_string(cycle) + ".txt";
-    std::filesystem::path filepath = std::filesystem::current_path() / filename;
+
+
+    //std::filesystem::path filepath = std::filesystem::current_path() / filename;
+
+    std::filesystem::create_directories("outputs/memory-stamps"); // ensures folder exists
+
+    std::filesystem::path filepath = std::filesystem::current_path()
+        / "outputs" / "memory-stamps" / filename;
+
+
 
     std::ofstream out_file(filepath);
 
@@ -450,10 +465,10 @@ void Scheduler::logMemoryState(int cycle)
 
             size_t size = process->getMemoryRequired();
             const std::string& proc_name = process->getName();
-
-            out_file << "Index: " << index << std::endl;
+            size_t lowerbound = index - size + 1;
+            out_file << "Upper bound: " << index << std::endl;
             out_file << "Process Name: " << proc_name << std::endl;
-            out_file << "Memory Size: " << size << " KB" << std::endl << std::endl;
+            out_file << "Lower bound: " << lowerbound << " KB" << std::endl << std::endl;
         }
 
         out_file << "----start---- = 0" << std::endl;

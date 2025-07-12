@@ -20,7 +20,7 @@ ProcessManager::ProcessManager(int min_ins, int max_ins, int n_cpu, std::string 
 void ProcessManager::addProcess(std::string name, std::string time, std::chrono::time_point<std::chrono::system_clock> creation_time)
 {
     pid_counter_++;
-    auto process = std::make_shared<Process>(pid_counter_, name, time, creation_time, -1, min_ins_, max_ins_);
+    auto process = std::make_shared<Process>(pid_counter_, name, time, creation_time, -1, min_ins_, max_ins_, mem_per_proc, mem_per_frame);
     process_list_[name] = process;
     process->generateCommands(min_ins_, max_ins_);
     scheduler_->addProcess(process);

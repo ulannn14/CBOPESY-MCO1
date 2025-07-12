@@ -35,7 +35,7 @@ private:
     std::map<size_t, size_t> free_blocks;
     void initializeMemory();
     bool canAllocateAt(size_t index, size_t size) const;
-    void allocateAt(size_t index, size_t size);
+    void allocateAt(size_t start, size_t size, std::shared_ptr<Process> process);
     void deallocateAt(size_t index, size_t size);
 };
 

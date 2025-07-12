@@ -35,7 +35,7 @@ public:
         FINISHED
     };
 
-    Process(int pid, const std::string& name, const std::string& time, std::chrono::time_point<std::chrono::system_clock> creation_time, int core, int min_ins, int max_ins);
+    Process(int pid, const std::string& name, const std::string& time, std::chrono::time_point<std::chrono::system_clock> creation_time, int core, int min_ins, int max_ins, size_t mem_per_proc, size_t mem_per_frame);
     void executeCurrentCommand();
     int getCommandCounter() const;
     int getLinesOfCode() const;

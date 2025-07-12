@@ -8,14 +8,17 @@
 #include <random>
 #include <string>
 
-Process::Process(int pid, const std::string& name, const std::string& time, std::chrono::time_point<std::chrono::system_clock> creation_time, int core, int min_ins, int max_ins)
+Process::Process(int pid, const std::string& name, const std::string& time, std::chrono::time_point<std::chrono::system_clock> creation_time, int core, int min_ins, int max_ins, size_t mem_per_proc, size_t mem_per_frame)
     : pid_(pid),
     name_(name),
     time_(time),
 	creation_time_(creation_time),
     cpu_core_id_(core),
     process_state_(READY),
-    gen_(std::random_device{}()) 
+    gen_(std::random_device{}()), 
+    mem_per_proc_(mem_per_proc),
+    mem_per_frame_(mem_per_frame),
+    memory_(nullptr)
 {
     calculateFrame();
 }

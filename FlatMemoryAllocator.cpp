@@ -36,9 +36,8 @@ void* FlatMemoryAllocator::allocate(std::shared_ptr<Process> process)
 
         if (block_size >= size)
         {
-            allocateAt(block_start, size);
+            allocateAt(block_start, size, process);  // properly mark memory + update list
             n_process++;
-            process_list[block_start] = process;
             return reinterpret_cast<void*>(&memory[block_start]);
         }
     }
@@ -89,26 +88,31 @@ bool FlatMemoryAllocator::canAllocateAt(size_t index, size_t size) const
     return true;
 }
 
-void FlatMemoryAllocator::allocateAt(size_t index, size_t size)
+void FlatMemoryAllocator::allocateAt(size_t start, size_t size, std::shared_ptr<Process> process)
 {
-    auto it = free_blocks.lower_bound(index);
-    if (it != free_blocks.end() && it->first <= index && it->first + it->second >= index + size)
+    for (size_t i = start; i < start + size; ++i)
     {
-        size_t block_start = it->first;
-        size_t block_size = it->second;
-        free_blocks.erase(it);
-
-        if (block_start < index)
-        {
-            free_blocks[block_start] = index - block_start;
-        }
-        if (index + size < block_start + block_size)
-        {
-            free_blocks[index + size] = (block_start + block_size) - (index + size);
-        }
-
-        allocated_size += size;
+        allocation_map[i] = true;
     }
+
+    // Update free block
+    auto it = free_blocks.find(start);
+    if (it != free_blocks.end())
+    {
+        if (it->second > size)
+        {
+            size_t new_start = start + size;
+            size_t new_size = it->second - size;
+            free_blocks.erase(it);
+            free_blocks[new_start] = new_size;
+        }
+        else
+        {
+            free_blocks.erase(it);
+        }
+    }
+
+    process_list[start + size - 1] = process; // upper bound as key
 }
 
 void FlatMemoryAllocator::deallocateAt(size_t index, size_t size)
