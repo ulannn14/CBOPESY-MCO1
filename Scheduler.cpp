@@ -445,7 +445,7 @@ void Scheduler::logMemoryState(int cycle)
         if (localtime_s(&current_time_tm, &current_time) == 0)
         {
             char timestamp[100];
-            std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", &current_time_tm);
+            std::strftime(timestamp, sizeof(timestamp), "%Y/%m/%d %H:%M:%S", &current_time_tm);
             out_file << "Timestamp: (" << timestamp << ")" << std::endl;
         }
         else
@@ -466,9 +466,9 @@ void Scheduler::logMemoryState(int cycle)
             size_t size = process->getMemoryRequired();
             const std::string& proc_name = process->getName();
             size_t lowerbound = index - size + 1;
-            out_file << "Upper bound: " << index << std::endl;
-            out_file << "Process Name: " << proc_name << std::endl;
-            out_file << "Lower bound: " << lowerbound << " KB" << std::endl << std::endl;
+            out_file << index << std::endl;
+            out_file << proc_name << std::endl;
+            out_file << lowerbound << std::endl << std::endl;
         }
 
         out_file << "----start---- = 0" << std::endl;
