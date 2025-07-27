@@ -28,7 +28,7 @@ private:
     size_t mem_per_frame;                       
     size_t allocated_size;                      
     std::vector<char> memory;                   
-    std::vector<bool> allocation_map;           
+    std::vector<int> allocation_map;           
     int n_process;                             
     std::mutex memory_mutex;                    
     std::map<size_t, std::shared_ptr<Process>> process_list; 

@@ -42,6 +42,7 @@ public:
     ~ProcessManager();
 
     void processSmi();
+    void vmStat();
 };
 
 #endif

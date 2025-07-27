@@ -205,6 +205,10 @@ void ConsoleManager::getInput(const std::string& command)
     {
         process_manager->processSmi();
     }
+    else if (command == "vmstat")
+    {
+        process_manager->vmStat();
+    }
     else if (command == "clear")
     {
         system("cls");

@@ -58,13 +58,45 @@ void ProcessManager::processSmi()
     const std::vector<std::string>& run = CoreStateManager::getInstance().getProcess();
     const std::vector<int>& core_states = CoreStateManager::getInstance().getCoreStates();
 
-    for (int core_state : core_states)
+    for (bool core_state : core_states)
     {
         if (core_state)
         {
             core_usage++;
         }
     }
+
+    auto process_list_alloc = memory_allocator_->getProcessList();
+    for (auto it = process_list_alloc.rbegin(); it != process_list_alloc.rend(); ++it)
+    {
+        const auto& pair = *it;
+        size_t index = pair.first;
+        std::shared_ptr<Process> process = pair.second;
+
+        size_t size = process->getMemoryRequired();
+        const std::string& proc_name = process->getName();
+
+        std::stringstream temp;
+        temp << std::left << std::setw(30) << proc_name << " ";
+        memory_usage += size;
+        temp << size << " KB" << std::endl;
+        running << temp.str() << std::endl;
+    }
+
+    std::cout << "--------------------------------------------\n";
+    std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |\n";
+    std::cout << "--------------------------------------------\n";
+
+    std::cout << "CPU-Util: " << (static_cast<double>(core_usage) / num_cpu_) * 100 << "%" << std::endl;
+    std::cout << "Memory Usage: " << memory_usage << "KB" << " / " << max_overall_mem << "KB" << std::endl;
+    std::cout << "Memory Util: " << (static_cast<double>(memory_usage) / max_overall_mem) * 100 << "%" << std::endl;
+
+    std::cout << "============================================\n";
+    std::cout << "Running processes and memory usage:\n";
+    std::cout << "--------------------------------------------\n";
+
+    std::cout << running.str();
+    std::cout << "--------------------------------------------\n";
 }
 
 ProcessManager::~ProcessManager()
@@ -87,4 +119,20 @@ ProcessManager::~ProcessManager()
     
 
     std::cout << "[ProcessManager] Shutdown complete.\n";
+}
+
+void ProcessManager::vmStat()
+{
+    static std::mutex process_list_mutex;
+
+    std::cout << "==========================================" << std::endl;
+    std::cout << std::setw(12) << max_overall_mem << " KB total memory" << std::endl;
+    std::cout << std::setw(12) << max_overall_mem - memory_allocator_->getExternalFragmentation() << " KB used memory" << std::endl;
+    std::cout << std::setw(12) << memory_allocator_->getExternalFragmentation() << " KB free memory" << std::endl;
+    std::cout << std::setw(12) << cpu_clock->getCpuClock() - cpu_clock->getActiveCpuNum() << " idle cpu ticks" << std::endl;
+    std::cout << std::setw(12) << cpu_clock->getActiveCpuNum() << " active cpu ticks" << std::endl;
+    std::cout << std::setw(12) << cpu_clock->getCpuClock() << " total cpu ticks" << std::endl;
+    std::cout << std::setw(12) << memory_allocator_->getPageIn() << " pages paged in" << std::endl;
+    std::cout << std::setw(12) << memory_allocator_->getPageOut() << " pages paged out" << std::endl;
+    std::cout << "==========================================" << std::endl;
 }

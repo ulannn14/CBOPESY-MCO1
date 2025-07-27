@@ -92,7 +92,7 @@ void FlatMemoryAllocator::allocateAt(size_t start, size_t size, std::shared_ptr<
 {
     for (size_t i = start; i < start + size; ++i)
     {
-        allocation_map[i] = true;
+        allocation_map[i] = 1;
     }
 
     // Update free block
