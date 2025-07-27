@@ -9,7 +9,15 @@ ProcessManager::ProcessManager(int min_ins, int max_ins, int n_cpu, std::string 
     int quantum_cycle, Clock* cpu_clock, size_t max_overall_mem, size_t mem_per_frame, size_t mem_per_proc)
     : min_ins_(min_ins), max_ins_(max_ins), cpu_clock(cpu_clock), num_cpu_(n_cpu), mem_per_proc(mem_per_proc),max_overall_mem(max_overall_mem), mem_per_frame(mem_per_frame)
 {
-    memory_allocator_ = new FlatMemoryAllocator(max_overall_mem, mem_per_frame);
+
+    if (max_overall_mem == mem_per_frame)
+    {
+        memory_allocator_ = new FlatMemoryAllocator(max_overall_mem, mem_per_frame);
+    }
+    else
+    {
+        memory_allocator_ = new PagingAllocator(max_overall_mem, mem_per_frame);
+    }
 
     scheduler_ = new Scheduler(scheduler_algo, delays_per_exec, n_cpu, quantum_cycle, cpu_clock, memory_allocator_);
     scheduler_->setNumCPUs(n_cpu);
