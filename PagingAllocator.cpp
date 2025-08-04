@@ -1,4 +1,4 @@
-#include "PagingAllocator.h"
+#include "PagingAllocator.hpp"
 #include "Process.h"
 #include <iostream>
 #include <fstream>

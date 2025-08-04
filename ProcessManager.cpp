@@ -1,7 +1,8 @@
 #include "ProcessManager.hpp"
 #include "CoreStateManager.hpp"
 #include "SymbolTable.hpp"
-#include "FlatMemoryAllocator.hpp" 
+#include "FlatMemoryAllocator.hpp"
+#include "PagingAllocator.hpp"
 #include <random>
 #include <cmath>
 

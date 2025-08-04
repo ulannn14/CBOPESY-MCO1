@@ -1,0 +1,11 @@
+Timestamp: (2025-07-12 20:52:56)
+Number of processes in memory: 8
+Total external fragmentation in KB: 16384
+
+----end---- = 16384
+
+Index: 0
+Process Name: process9
+Memory Size: 0 KB
+
+----start---- = 0

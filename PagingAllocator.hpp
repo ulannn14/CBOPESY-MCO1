@@ -1,7 +1,7 @@
 #ifndef PAGING_ALLOCATOR_H
 #define PAGING_ALLOCATOR_H
 
-#include "IMemoryAllocator.h"
+#include "IMemoryAllocator.hpp"
 #include <vector>
 #include <iostream>
 #include <mutex>
